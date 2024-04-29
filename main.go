@@ -151,11 +151,16 @@ func realMain() int {
 				semaphore <- 1
 				fmt.Printf("--> %15s: %s\n", platform.String(), path)
 
+				ldflagsClone := ldflags
+				if platform.OS != "windows" && strings.Contains(ldflags, "-H=windowsgui") {
+					ldflagsClone = strings.ReplaceAll(ldflags, "-H=windowsgui", "")
+				}
+
 				opts := &CompileOpts{
 					PackagePath: path,
 					Platform:    platform,
 					OutputTpl:   outputTpl,
-					Ldflags:     ldflags,
+					Ldflags:     ldflagsClone,
 					Gcflags:     flagGcflags,
 					Asmflags:    flagAsmflags,
 					Tags:        tags,
